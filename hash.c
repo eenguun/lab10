@@ -25,7 +25,7 @@ int ht_hash(const char s[])
         unsigned long hash = 5381;
         int c;
 
-        while ((c = (unsigned char)*s++) ! = '\0'){
+        while ((c = (unsigned char)*s++) != '\0'){
             hash = ((hash << 5) + hash) + (unsigned long)c;
         } 
 
