@@ -20,9 +20,16 @@ void ht_insert(HashTable *p_hash, const Student x)
  */
 int ht_hash(const char s[])
 {
-        /*
-          Энд функцыг хэрэгжүүл
-        */
+        if (s == NULL) return 0;
+
+        unsigned long hash = 5381;
+        int c;
+
+        while ((c = (unsigned char)*s++) ! = '\0'){
+            hash = ((hash << 5) + hash) + (unsigned long)c;
+        } 
+
+        return (int)(hash % HASH_TABLE_SIZE);
 }
 
 /*
@@ -54,9 +61,14 @@ void ht_init(HashTable *p_hash)
  */
 Student *ht_search(HashTable *p_hash, const char id[])
 {
-        /*
-          Энд функцыг хэрэгжүүл
-        */
+        if (p_hash == NULL || p_hash->h == NULL || id == NULL) return NULL;
+
+        int h = ht_hash(id);
+        Elm *found = l_search(&p_hash->h[h], id);
+
+        if (found == NULL) return NULL;
+
+        return &found->x;
 }
 
 /*
@@ -66,9 +78,20 @@ Student *ht_search(HashTable *p_hash, const char id[])
  */
 void ht_update(HashTable *p_hash, const Student x)
 {
-        /*
-          Энд функцыг хэрэгжүүл 
-        */
+        if (p_hash == NULL || p_hash->h == NULL) return;
+
+        Student *target = ht_search(p_hash, x.id);
+
+        if (target != NULL){
+            strncpy(target->ovog, x.ovog, sizeof(target->ovog) - 1);
+            target->ovog[sizeof(target->ovog) - 1] = '\0';
+
+            strncpy(target->ner, x.ner, sizeof(target->ner) - 1);
+            target->ner[sizeof(target->ner) - 1] = '\0';
+        }
+        else{
+            ht_insert(p_hash, x);
+        }
 }
 
 /*
@@ -77,9 +100,22 @@ void ht_update(HashTable *p_hash, const Student x)
  */
 void ht_del(HashTable *p_hash, const char id[])
 {
-        /*
-          Энд функцыг хэрэгжүүл 
-        */
+        if (p_hash == NULL || p_hash->h == NULL || id == NULL) return;
+
+        int h = ht_hash(id);
+        List *bucket = &p_hash->h[h];
+
+        Elm *cur = bucket->head;
+        int pos = 0;
+
+        while (cur != NULL){
+            if (strcmp(cur->x.id, id) == 0){
+                l_erase(bucket, pos);
+                return;
+            }
+            cur = cur->next;
+            pos++;
+        }
 }
 
 /*
