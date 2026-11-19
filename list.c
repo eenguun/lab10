@@ -29,7 +29,7 @@ void l_push_front(List *p, Student x)
 {
 	if (p == NULL) return;
 
-    ELm *new_elm = (Elm *)malloc(sizeof(ELm));
+    Elm *new_elm = (Elm *)malloc(sizeof(Elm));
     if (new_elm == NULL) return;
 
     new_elm->x = x;
@@ -54,26 +54,30 @@ void l_insert(List *p, Student x, int pos)
 {
 	if (p == NULL) return;
 
-    if (pos <= 0 || p->head == NULL){
+    if (pos <= 0) {
         l_push_front(p, x);
         return;
     }
-    if (pos >= p->len){
+
+    if (pos >= p->len) {
         l_push_back(p, x);
         return;
     }
 
     Elm *cur = p->head;
-    while (cur->next != p->tail){
+
+    for (int i = 0; i < pos - 1; i++) {
         cur = cur->next;
     }
 
-    Elm *new_elm = (Elm *)malloc(sizeof(ELm));
+    Elm *new_elm = (Elm *)malloc(sizeof(Elm));
     if (new_elm == NULL) return;
 
     new_elm->x = x;
     new_elm->next = cur->next;
+
     cur->next = new_elm;
+
     p->len++;
 }
 
@@ -84,12 +88,13 @@ void l_insert(List *p, Student x, int pos)
  */
 void l_pop_front(List *p)
 {
-	if (p == NULL || pos < 0 || pos >= p-len) return;
+	if (p == NULL || p->head == NULL) return;
 
     Elm *temp = p->head;
+
     p->head = p->head->next;
 
-    if (p->head == NULL){
+    if (p->head == NULL) {
         p->tail = NULL;
     }
 
@@ -159,18 +164,12 @@ void l_print(List *p)
 {
     if (p == NULL) return;
 
-    FILE *fp = fopen("output.txt", "w");
-    if (fp == NULL){
-        perror("output.txt neej chadsangui.");
-        return;
-    }
-
     Elm *cur = p->head;
-    while (cur != NULL){
-        student_print(fp, &cur->x);
+
+    while (cur != NULL) {
+        student_print(stdout, &cur->x);
         cur = cur->next;
     }
-    fclose(fp);
 }
 
 /*
